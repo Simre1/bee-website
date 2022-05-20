@@ -12,15 +12,17 @@ import Pages qualified
 
 main :: IO ()
 main = shake shakeOptions $ do
-  pages
-  css
+  action $ pages >> css
 
-pages :: Rules ()
+pages :: Action ()
 pages = forM_ Pages.pages $ \page -> do
   writeFile'
     ("out/" ++ (T.unpack $ page ^. #route) ++ ".html")
     (TL.unpack $ runIdentity $ renderTextT $ renderPage $ page)
 
-css :: Rules ()
+css :: Action ()
 css = do
-  action $ command_ [] "windicss" ["*/*.hs", "*/*/*.hs", "*/*/*/*.hs", "-o", "out/css.css"]
+  htmlFiles <- getDirectoryFiles "" ["out/*.html", "out/*/*.html", "out/*/*/*.html"]
+  command_ [] "windicss" $ ["-o", "out/css.css"] ++ htmlFiles
+  
+

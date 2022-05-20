@@ -16,7 +16,7 @@ renderPage :: Page -> Html ()
 renderPage page = do
     html_ $ do
         head_ $ do
-            link_ [href_ "css.css", type_ "stylesheet"]
+            link_ [href_ "css.css", rel_ "stylesheet"]
             title_ $ toHtml $ page ^. #title
         body_ $ do            
             page ^. #content
